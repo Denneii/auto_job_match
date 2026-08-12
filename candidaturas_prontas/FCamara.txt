@@ -1,0 +1,111 @@
+Vaga: FCamara
+LINK PARA APLICAÇÃO: https://www.linkedin.com/jobs/view/4449055906
+
+=========================================
+COVER LETTER
+=========================================
+Dennis Souto, um jovem e ambicioso desenvolvedor fullstack, está pronto para se juntar ao time da FCamara. Com experiência em desenvolvimento de sistemas web e APIs utilizando tecnologias como Java (Spring Boot), React, PHP (Laravel) e Node.js, estou confiante em minha capacidade de contribuir para o sucesso da empresa. Meu conhecimento intermediário em Linguagens de Programação de Especialização, incluindo Java, Spring Boot e APIs, me permite desenvolver aplicativos escaláveis e eficientes. Além disso, minha experiência em desenvolvimento de aplicações web e integração entre sistemas me permitirá trabalhar em equipe para entregar soluções inovadoras. Estou ansioso para se juntar ao time da FCamara e contribuir para a revolução dos negócios e impacto nas pessoas.
+
+=========================================
+CURRÍCULO (CÓDIGO LATEX)
+=========================================
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.5in,nofoot]{geometry}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{*1}{*1}
+
+\newcommand{\entry}[4]{
+    \noindent\textbf{#1} \hfill #2 \\
+    \noindent\textit{#3} \hfill \textit{#4} \\
+    \vspace{2pt}
+}
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+\noindent
+\begin{minipage}[t]{0.5\textwidth}
+\textbf{\Large DENNIS SOUTO}
+
+\vspace{0.4em}
+\noindent Aracaju, Sergipe, Brasil
+\end{minipage}%%
+\begin{minipage}[t]{0.5\textwidth}
+\raggedleft
+Telefone: +55 (79) 98161-8181 \\
+\href{mailto:dennissouto84@gmail.com}{dennissouto84@gmail.com}
+
+\vspace{0.2em}
+\href{https://www.linkedin.com/in/dennis-souto-741b112b6}{LinkedIn} \\
+\href{https://github.com/denneii}{GitHub}
+\end{minipage}
+
+\vspace{0.5em}
+
+\section*{Resumo Profissional}
+\vspace{0.4em}
+\noindent Desenvolvedor Fullstack Júnior com experiência em desenvolvimento de sistemas web e APIs utilizando tecnologias como Java (Spring Boot), React, PHP (Laravel) e Node.js. Atuo no desenvolvimento de sistemas empresariais, participando da implementação de novas funcionalidades, correção de problemas e evolução de aplicações web. Tenho conhecimento intermediário em Linguagens de Programação de Especialização, incluindo Java, Spring Boot e APIs.
+
+\vspace{0.5em}
+
+\section*{Experiência Profissional}
+\vspace{0.6em}
+
+\entry{Zênit Software}{Abril de 2025 - Presente}{Desenvolvedor de sistemas Fullstack Junior}{Aracaju, Sergipe, Brasil}
+\vspace{-1.2em}
+\begin{itemize}
+\setlength\itemsep{-0.3em}
+    \item Desenvolvimento e manutenção de software de Gestão de Segurança no Trabalho utilizando PHP, Laravel e MySQL, operando em ambiente Docker com Apache.
+    \item Criação integral do sistema corporativo Luwei RH.
+    \item Construção de interfaces modernas para o Luwei RH utilizando React com componentes reutilizáveis.
+\end{itemize}
+
+\entry{EducAZ Tecnologia em Educação}{Março de 2024 - Maio de 2025}{Desenvolvedor full stack}{São Paulo, Brasil}
+\vspace{-1.2em}
+\begin{itemize}
+\setlength\itemsep{-0.3em}
+    \item Desenvolvimento e manutenção de plataforma de cursos online utilizando PHP e Laravel.
+    \item Realização de ajustes de frontend utilizando o motor de templates Blade, com foco na organização do design e responsividade das páginas.
+\end{itemize}
+
+\entry{SECOM - Secretaria de Comunicação Social do estado de Sergipe}{1 mês}{Assistente de TI (Estágio)}{Aracaju, Sergipe, Brasil}
+\vspace{-1.2em}
+\begin{itemize}
+\setlength\itemsep{-0.3em}
+    \item Prestação de suporte técnico de infraestrutura física e virtual para todos os funcionários da secretaria.
+\end{itemize}
+
+
+
+\section*{Formação Acadêmica}
+\vspace{0.6em}
+\entry{IFS - Instituto Federal de Sergipe}{2024 -- 2027}{Curso Superior de Tecnologia (CST) em Análise e Desenvolvimento de Sistemas (5º período)}{Brasil}
+
+\section*{Competências Técnicas}
+\vspace{0.6em}
+\noindent \textbf{Linguagens:} Java, JavaScript, PHP, SQL, HTML, CSS \\
+\noindent \textbf{Frameworks \& Tecnologias:} Spring Boot, React, Laravel, Livewire, Node.js, Docker \\
+\noindent \textbf{Backend \& Infraestrutura:} APIs REST, Integração entre Sistemas, Modelagem de Dados, MySQL, Apache \\
+\noindent \textbf{Ferramentas:} Git, GitHub \\
+\noindent \textbf{Metodologias:} Ágeis (Scrum/Kanban)
+
+\section*{Habilidades Interpessoais}
+\vspace{0.6em}
+\noindent Trabalho em equipe, Resolução de problemas, Proatividade, Aprendizado rápido.
+
+\end{document}

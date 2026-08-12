@@ -1,0 +1,113 @@
+Vaga: Jobgether
+LINK PARA APLICAÇÃO: https://www.linkedin.com/jobs/view/4448919585
+
+=========================================
+COVER LETTER
+=========================================
+Dennis Souto, um jovem e ambicioso desenvolvedor fullstack, está ansioso para contribuir para a criação e evolução de soluções digitais escaláveis. Com experiência em desenvolvimento de sistemas empresariais utilizando Java (Spring Boot), React, PHP (Laravel) e Node.js, estou confiante em minha capacidade de desenvolver software aplicativos, escrever código de alta qualidade e colaborar com equipes para entregar produtos confiáveis que resolvem desafios empresariais reais. Estou ansioso para aprender e crescer como profissional no ambiente tecnológico inovador da Jobgether.
+
+=========================================
+CURRÍCULO (CÓDIGO LATEX)
+=========================================
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.5in,nofoot]{geometry}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{*1}{*1}
+
+\newcommand{\entry}[4]{
+    \noindent\textbf{#1} \hfill #2 \\
+    \noindent\textit{#3} \hfill \textit{#4} \\
+    \vspace{2pt}
+}
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+\noindent
+\begin{minipage}[t]{0.5\textwidth}
+\textbf{\Large DENNIS SOUTO}
+
+\vspace{0.4em}
+\noindent Aracaju, Sergipe, Brasil
+\end{minipage}%%
+\begin{minipage}[t]{0.5\textwidth}
+\raggedleft
+Telefone: +55 (79) 98161-8181 \\
+\href{mailto:dennissouto84@gmail.com}{dennissouto84@gmail.com}
+
+\vspace{0.2em}
+\href{https://www.linkedin.com/in/dennis-souto-741b112b6}{LinkedIn} \\
+\href{https://github.com/denneii}{GitHub}
+\end{minipage}
+
+\vspace{0.5em}
+
+\section*{Resumo Profissional}
+\vspace{0.4em}
+\noindent Desenvolvedor Fullstack Júnior com experiência em desenvolvimento de sistemas web e APIs utilizando Java (Spring Boot), React, PHP (Laravel) e Node.js. Domino as tecnologias mencionadas na vaga, incluindo Java, Spring Boot e APIs. Tenho habilidade para trabalho em equipe, aprendizado rápido e interesse em construir sistemas eficientes, escaláveis e de qualidade.
+
+\vspace{0.5em}
+
+\section*{Experiência Profissional}
+\vspace{0.6em}
+
+\entry{Zênit Software}{Abril de 2025 - Presente}{Desenvolvedor de sistemas Fullstack Junior}{Aracaju, Sergipe, Brasil}
+\vspace{-1.2em}
+\begin{itemize}
+\setlength\itemsep{-0.3em}
+    \item Desenvolvimento e manutenção de software de Gestão de Segurança no Trabalho utilizando PHP, Laravel e MySQL, operando em ambiente Docker com Apache.
+    \item Criação integral do sistema corporativo Luwei RH.
+    \item Construção de interfaces modernas para o Luwei RH utilizando React com componentes reutilizáveis.
+    \item Desenvolvimento de APIs REST com Java Spring Boot para o Luwei RH, consumindo a base de dados corporativa.
+\end{itemize}
+
+\entry{EducAZ Tecnologia em Educação}{Março de 2024 - Maio de 2025}{Desenvolvedor full stack}{São Paulo, Brasil}
+\vspace{-1.2em}
+\begin{itemize}
+\setlength\itemsep{-0.3em}
+    \item Desenvolvimento e manutenção de plataforma de cursos online utilizando PHP e Laravel.
+    \item Realização de ajustes de frontend utilizando o motor de templates Blade, com foco na organização do design e responsividade das páginas.
+    \item Implementação de novas funcionalidades para sistemas educacionais.
+\end{itemize}
+
+\entry{SECOM - Secretaria de Comunicação Social do estado de Sergipe}{1 mês}{Assistente de TI (Estágio)}{Aracaju, Sergipe, Brasil}
+\vspace{-1.2em}
+\begin{itemize}
+\setlength\itemsep{-0.3em}
+    \item Prestação de suporte técnico de infraestrutura física e virtual para todos os funcionários da secretaria.
+\end{itemize}
+
+
+
+\section*{Formação Acadêmica}
+\vspace{0.6em}
+\entry{IFS - Instituto Federal de Sergipe}{2024 -- 2027}{Curso Superior de Tecnologia (CST) em Análise e Desenvolvimento de Sistemas (5º período)}{Brasil}
+
+\section*{Competências Técnicas}
+\vspace{0.6em}
+\noindent \textbf{Linguagens:} Java, JavaScript, PHP, SQL, HTML, CSS \\
+\noindent \textbf{Frameworks \& Tecnologias:} Spring Boot, React, Laravel, Livewire, Node.js, Docker \\
+\noindent \textbf{Backend \& Infraestrutura:} APIs REST, Integração entre Sistemas, Modelagem de Dados, MySQL, Apache \\
+\noindent \textbf{Ferramentas:} Git, GitHub \\
+\noindent \textbf{Metodologias:} Ágeis (Scrum/Kanban)
+
+\section*{Habilidades Interpessoais}
+\vspace{0.6em}
+\noindent Trabalho em equipe, Resolução de problemas, Proatividade, Aprendizado rápido.
+
+\end{document}

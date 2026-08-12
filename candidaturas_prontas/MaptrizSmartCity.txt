@@ -1,0 +1,114 @@
+Vaga: Maptriz Smart City
+LINK PARA APLICAÇÃO: https://www.linkedin.com/jobs/view/4445035650
+
+=========================================
+COVER LETTER
+=========================================
+Dennis Souto, um desenvolvedor fullstack apoiado em Java e Spring Boot, aqui! Com experiência em desenvolvimento de sistemas empresariais e APIs REST, estou pronto para levar minhas habilidades para o próximo nível. Estou ansioso para contribuir para projetos que transformam a gestão pública e melhoram a vida dos cidadãos. Sou um profissional proativo, com facilidade para trabalho em equipe e aprendizado rápido. Estou confiante de que meu background em desenvolvimento de sistemas e minha capacidade de resolução de problemas complexos me tornam uma escolha ideal para esta vaga.
+
+Como um desenvolvedor fullstack, tenho habilidades em Java, Spring Boot, React, PHP (Laravel) e Node.js. Tenho experiência em desenvolvimento de sistemas empresariais, participando da implementação de novas funcionalidades, correção de problemas e evolução de aplicações web. Sou um profissional que se preocupa com a qualidade do código e a entrega de soluções escaláveis e eficientes.
+
+Estou ansioso para trabalhar em uma equipe multidisciplinar e contribuir para projetos que fazem diferença na vida dos cidadãos. Estou confiante de que meu background e habilidades me tornam uma escolha ideal para esta vaga.
+
+=========================================
+CURRÍCULO (CÓDIGO LATEX)
+=========================================
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.5in,nofoot]{geometry}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{xcolor}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{*1}{*1}
+
+\newcommand{\entry}[4]{
+    \noindent\textbf{#1} \hfill #2 \\
+    \noindent\textit{#3} \hfill \textit{#4} \\
+    \vspace{2pt}
+}
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+\noindent
+\begin{minipage}[t]{0.5\textwidth}
+\textbf{\Large DENNIS SOUTO}
+
+\vspace{0.4em}
+\noindent Aracaju, Sergipe, Brasil
+\end{minipage}%%
+\begin{minipage}[t]{0.5\textwidth}
+\raggedleft
+Telefone: +55 (79) 98161-8181 \\
+\href{mailto:dennissouto84@gmail.com}{dennissouto84@gmail.com}
+
+\vspace{0.2em}
+\href{https://www.linkedin.com/in/dennis-souto-741b112b6}{LinkedIn} \\
+\href{https://github.com/denneii}{GitHub}
+\end{minipage}
+
+\vspace{0.5em}
+
+\section*{Resumo Profissional}
+\vspace{0.4em}
+\noindent Desenvolvedor Fullstack apoiado em Java e Spring Boot com experiência em desenvolvimento de sistemas empresariais e APIs REST. Sou um profissional proativo, com facilidade para trabalho em equipe e aprendizado rápido. Tenho habilidades em Java, Spring Boot, React, PHP (Laravel) e Node.js. Estou ansioso para contribuir para projetos que transformam a gestão pública e melhoram a vida dos cidadãos.
+
+\vspace{0.5em}
+
+\section*{Experiência Profissional}
+\vspace{0.6em}
+
+\entry{Zênit Software}{Abril de 2025 - Presente}{Desenvolvedor Fullstack Junior}{Aracaju, Sergipe, Brasil}
+\vspace{-1.2em}
+\begin{itemize}
+\setlength\itemsep{-0.3em}
+    \item Desenvolvimento de sistemas empresariais utilizando Java, Spring Boot e APIs REST
+    \item Implementação de novas funcionalidades e correção de problemas em aplicações web
+\end{itemize}
+
+\entry{EducAZ Tecnologia em Educação}{Março de 2024 - Maio de 2025}{Desenvolvedor full stack}{São Paulo, Brasil}
+\vspace{-1.2em}
+\begin{itemize}
+\setlength\itemsep{-0.3em}
+    \item Desenvolvimento e manutenção de plataforma de cursos online utilizando PHP e Laravel
+    \item Realização de ajustes de frontend com o motor de templates Blade
+\end{itemize}
+
+\entry{SECOM}{1 mês}{Assistente de TI (Estágio)}{Aracaju, Sergipe, Brasil}
+\vspace{-1.2em}
+\begin{itemize}
+\setlength\itemsep{-0.3em}
+    \item Prestação de suporte técnico de infraestrutura física e virtual para todos os funcionários da secretaria
+\end{itemize}
+
+
+
+\section*{Formação Acadêmica}
+\vspace{0.6em}
+\entry{IFS - Instituto Federal de Sergipe}{2024 -- 2027}{Curso Superior de Tecnologia (CST) em Análise e Desenvolvimento de Sistemas (5º período)}{Brasil}
+
+\section*{Competências Técnicas}
+\vspace{0.6em}
+\noindent \textbf{Linguagens:} Java, JavaScript, PHP, SQL, HTML, CSS \\
+\noindent \textbf{Frameworks \& Tecnologias:} Spring Boot, React, Laravel, Livewire, Node.js, Docker \\
+\noindent \textbf{Backend \& Infraestrutura:} APIs REST, Integração entre Sistemas, Modelagem de Dados, MySQL, Apache \\
+\noindent \textbf{Ferramentas:} Git, GitHub \\
+\noindent \textbf{Metodologias:} Ágeis (Scrum/Kanban)
+
+\section*{Habilidades Interpessoais}
+\vspace{0.6em}
+\noindent Trabalho em equipe, Resolução de problemas, Proatividade, Aprendizado rápido.
+
+\end{document}
