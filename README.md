@@ -1,106 +1,315 @@
-# CONTEXTO DO PROJETO — AUTO JOB MATCH
+# Auto Job Match
 
-## 1. Finalidade deste arquivo
+Aplicação full stack para automatizar a busca, análise e priorização de vagas de tecnologia com apoio de Inteligência Artificial local.
 
-Este documento serve para transferir o contexto do projeto **Auto Job Match** para outro chat ou outra IA, permitindo continuar o desenvolvimento do ponto exato em que o histórico terminou.
+O sistema utiliza o perfil profissional do usuário como fonte de contexto para comparar vagas, calcular compatibilidade, identificar requisitos atendidos e ausentes e, para oportunidades com alta compatibilidade, gerar materiais personalizados de candidatura.
 
-Ele foi construído a partir do histórico integral do projeto. Quando o histórico apresenta versões diferentes da mesma classe, rota ou estrutura, este documento diferencia:
-
-- o que foi implementado e testado;
-- o que foi alterado durante o desenvolvimento;
-- o que ainda está inconsistente;
-- o que foi apenas planejado;
-- qual deve ser o próximo passo.
+> **Status:** MVP técnico avançado. Os principais fluxos de backend já foram desenvolvidos, mas a integração frontend/backend e alguns recursos de produto ainda estão em evolução.
 
 ---
 
-## 2. Resumo executivo
+## Sumário
 
-O Auto Job Match é uma aplicação full stack local para automatizar a busca e análise de vagas de tecnologia.
-
-O sistema possui ou passou a desenvolver:
-
-- frontend React + TypeScript + Vite;
-- backend Java + Spring Boot;
-- PostgreSQL em Docker;
-- autenticação JWT com Spring Security e BCrypt;
-- inteligência artificial local com Ollama e Spring AI;
-- análise de compatibilidade entre currículo e vaga;
-- persistência de vagas analisadas;
-- geração condicional de currículo adaptado e carta de apresentação;
-- geração de currículo em LaTeX;
-- busca de vagas por fontes externas;
-- automação do LinkedIn com Playwright;
-- reutilização de sessão por `linkedin-session.json`;
-- frontend inicial com login e dashboard manual.
-
-O ponto exato em que o histórico termina é a **estilização das telas `Login.tsx` e `Dashboard.tsx` com Tailwind CSS**. O frontend ainda precisa ser alinhado ao contrato real do backend.
+- [Visão geral](#visão-geral)
+- [Principais funcionalidades](#principais-funcionalidades)
+- [Stack](#stack)
+- [Arquitetura](#arquitetura)
+- [Fluxo principal](#fluxo-principal)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Pré-requisitos](#pré-requisitos)
+- [Configuração](#configuração)
+- [Executando o projeto](#executando-o-projeto)
+- [API](#api)
+- [Inteligência Artificial](#inteligência-artificial)
+- [Automação do LinkedIn](#automação-do-linkedin)
+- [Regras de negócio](#regras-de-negócio)
+- [Estado atual](#estado-atual)
+- [Próximos passos](#próximos-passos)
+- [Decisões técnicas](#decisões-técnicas)
+- [Segurança](#segurança)
 
 ---
 
-## 3. Objetivo funcional
+## Visão geral
 
-O sistema deve:
+O Auto Job Match foi criado para reduzir o trabalho repetitivo envolvido na procura por vagas:
 
-1. armazenar o perfil profissional do usuário;
-2. armazenar currículo, resumo, senioridade, habilidades e links;
-3. localizar vagas automaticamente;
-4. extrair título, empresa, descrição e link;
-5. comparar a vaga com o perfil usando Ollama;
-6. gerar uma nota de compatibilidade entre 0 e 100;
-7. justificar a nota;
-8. listar requisitos atendidos;
-9. listar habilidades faltantes;
-10. indicar se vale a pena aplicar;
-11. para matches altos, gerar currículo adaptado e carta;
-12. guardar os resultados no PostgreSQL;
-13. exibir os dados no frontend;
-14. futuramente executar buscas de forma agendada.
+- acessar diferentes plataformas;
+- executar pesquisas;
+- abrir e ler vagas;
+- comparar requisitos com o currículo;
+- identificar oportunidades compatíveis;
+- adaptar o resumo profissional;
+- reorganizar experiências relevantes;
+- gerar carta de apresentação;
+- guardar links e resultados;
+- evitar reprocessamento de vagas.
+
+A aplicação centraliza esse processo e transforma uma vaga encontrada em um resultado estruturado contendo dados da oportunidade, compatibilidade e materiais de candidatura.
 
 ---
 
-## 4. Tecnologias
+## Principais funcionalidades
+
+### Perfil profissional
+
+O sistema possui estrutura para armazenar:
+
+- nome;
+- e-mail;
+- senha;
+- telefone;
+- senioridade;
+- resumo profissional;
+- currículo completo;
+- habilidades;
+- LinkedIn;
+- GitHub e outros links, conforme a versão do modelo;
+- demais informações profissionais.
+
+O perfil é utilizado como fonte oficial de contexto para a análise da IA.
+
+### Análise de compatibilidade
+
+Para cada vaga, a IA analisa informações como:
+
+- tecnologias;
+- requisitos técnicos;
+- responsabilidades;
+- senioridade;
+- experiência exigida;
+- conhecimentos desejáveis;
+- localização;
+- modalidade;
+- idioma;
+- formação;
+- contexto da oportunidade.
+
+O resultado contém:
+
+- porcentagem de compatibilidade;
+- justificativa;
+- requisitos atendidos;
+- habilidades faltantes;
+- indicação se vale a pena aplicar.
+
+### Geração de materiais
+
+Quando o match ultrapassa o limite definido no projeto, são gerados:
+
+- resumo profissional adaptado;
+- experiências adaptadas;
+- carta de apresentação;
+- conteúdo personalizado para currículo;
+- currículo em LaTeX.
+
+A geração é feita em uma segunda etapa de IA para evitar processamento desnecessário em vagas com baixa compatibilidade.
+
+### Histórico
+
+As vagas analisadas são persistidas no PostgreSQL, permitindo recuperar:
+
+- vaga;
+- empresa;
+- descrição;
+- link;
+- porcentagem;
+- justificativa;
+- requisitos atendidos;
+- habilidades faltantes;
+- decisão de candidatura;
+- currículo gerado;
+- carta gerada.
+
+### Busca automatizada
+
+O projeto possui integrações/desenvolvimentos para:
+
+- LinkedIn via Playwright;
+- Gupy por API/endpoints estruturados;
+- Remotive como prova de conceito.
+
+A arquitetura procura utilizar dados estruturados quando disponíveis e Playwright quando a navegação automatizada é necessária.
+
+---
+
+## Stack
 
 ### Backend
 
-- Java 21 no ambiente do usuário;
-- Spring Boot;
-- Spring Web;
-- Spring Data JPA;
-- Hibernate;
-- Spring Security;
-- Auth0 Java JWT;
-- Spring AI;
-- Playwright para Java;
-- Maven;
-- Lombok em partes do projeto.
+- Java 21
+- Spring Boot
+- Spring Web
+- Spring Data JPA
+- Hibernate
+- Spring Security
+- Auth0 Java JWT
+- BCrypt
+- Spring AI
+- Playwright for Java
+- Maven
+- Lombok
 
 ### Frontend
 
-- React;
-- TypeScript;
-- Vite;
-- Tailwind CSS v4 com `@tailwindcss/vite`;
-- Fetch API;
-- `localStorage` para JWT.
+- React
+- TypeScript
+- Vite
+- Tailwind CSS v4
+- Fetch API
+- `localStorage` para armazenamento do JWT
 
 ### Banco e infraestrutura
 
-- PostgreSQL 15;
-- Docker Compose;
-- DBeaver;
-- Ollama em `localhost:11434`;
-- Chromium controlado pelo Playwright.
+- PostgreSQL 15
+- Docker / Docker Compose
+- DBeaver
+- Ollama
+- Chromium
 
-### Fontes de vagas
+### Integrações
 
-- LinkedIn por automação com Playwright;
-- Gupy por endpoint JSON descoberto no tráfego do portal;
-- Remotive como prova de conceito.
+- LinkedIn
+- Gupy
+- Remotive
+- Spring AI
+- Ollama
+- LaTeX
 
 ---
 
-## 5. Estrutura geral esperada
+## Arquitetura
+
+A aplicação utiliza arquitetura modular em camadas.
+
+```text
+┌─────────────────────────────────────────────┐
+│                    USUÁRIO                  │
+│ Login • Perfil • Vagas • Resultados         │
+└──────────────────────┬──────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────┐
+│           FRONTEND REACT + TS               │
+│ Login • Dashboard • Perfil • Vagas           │
+└──────────────────────┬──────────────────────┘
+                       │ HTTP / JSON + JWT
+                       ▼
+┌─────────────────────────────────────────────┐
+│             BACKEND SPRING BOOT             │
+│                                             │
+│ Controllers                                 │
+│ Services                                    │
+│ Security / JWT                              │
+│ MatchService                                │
+│ Spring AI                                   │
+│ Playwright                                  │
+│ Integrações externas                        │
+│ Geração de LaTeX                            │
+└──────────────┬──────────────┬───────────────┘
+               │              │
+               ▼              ▼
+        ┌─────────────┐  ┌─────────────┐
+        │ PostgreSQL  │  │   Ollama    │
+        │ Perfis      │  │ Análise IA  │
+        │ Vagas       │  │ Geração     │
+        └─────────────┘  └─────────────┘
+
+               ┌─────────────────────────┐
+               │ Fontes externas         │
+               │ LinkedIn • Gupy • etc.  │
+               └─────────────────────────┘
+```
+
+O fluxo interno principal segue:
+
+```text
+Controller
+    ↓
+Service
+    ↓
+Repository
+    ↓
+JPA / Hibernate
+    ↓
+PostgreSQL
+```
+
+Para recursos externos:
+
+```text
+Service
+ ├── Spring AI → Ollama
+ ├── Playwright → LinkedIn
+ ├── HTTP → Gupy / Remotive
+ └── Repository → PostgreSQL
+```
+
+---
+
+## Fluxo principal
+
+### 1. Login
+
+```text
+Frontend
+   ↓
+POST /auth/login
+   ↓
+AuthenticationManager
+   ↓
+AutenticacaoService
+   ↓
+PerfilRepository.findByEmail()
+   ↓
+BCrypt
+   ↓
+TokenService
+   ↓
+JWT
+   ↓
+Frontend
+```
+
+### 2. Análise de uma vaga
+
+```text
+VagaRequest
+    ↓
+Carregar perfil
+    ↓
+Montar prompt
+    ↓
+Ollama
+    ↓
+AnaliseMatch
+    ↓
+VagaAnalisada
+    ↓
+PostgreSQL
+```
+
+### 3. Geração de candidatura
+
+```text
+Análise
+   ↓
+Match > 70
+   ↓
+Segunda chamada à IA
+   ↓
+Resumo + experiências + carta
+   ↓
+Template LaTeX fixo
+   ↓
+Currículo personalizado
+```
+
+---
+
+## Estrutura do projeto
+
+A estrutura documentada é aproximadamente:
 
 ```text
 auto_job_match/
@@ -154,13 +363,31 @@ auto_job_match/
 └── docker-compose.yml
 ```
 
-Os nomes podem variar ligeiramente no código real. Conferir os arquivos antes de aplicar alterações.
+Os nomes podem variar conforme a versão atual do código.
 
 ---
 
-## 6. Banco de dados
+## Pré-requisitos
 
-### Configuração principal
+Antes de iniciar, é necessário ter:
+
+- Java 21;
+- Maven;
+- Node.js e npm;
+- Docker;
+- PostgreSQL via Docker;
+- Ollama;
+- Chromium/Playwright configurado pelo backend.
+
+Para automação do LinkedIn, também é necessária uma sessão autenticada criada pelo próprio fluxo do projeto.
+
+---
+
+## Configuração
+
+### PostgreSQL
+
+A configuração utilizada durante o desenvolvimento foi:
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/job_match_db
@@ -173,7 +400,7 @@ spring.jpa.properties.hibernate.format_sql=true
 spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 ```
 
-### Docker Compose utilizado como base
+Docker Compose:
 
 ```yaml
 services:
@@ -188,245 +415,9 @@ services:
       - "5432:5432"
 ```
 
-### DBeaver
+### Ollama
 
-- Host: `localhost`
-- Porta: `5432`
-- Database: `job_match_db`
-- Usuário: `root`
-- Senha: `root`
-
-### Observação sobre H2
-
-O H2 foi usado em uma etapa de testes, mas causou conflitos porque configurações de H2 e PostgreSQL ficaram simultaneamente no `application.properties`. O banco definitivo é o PostgreSQL. Remover configurações H2 se ainda existirem.
-
----
-
-## 7. Modelo `Perfil`
-
-O perfil começou simples e foi expandido.
-
-Campos existentes ou discutidos:
-
-- `Long id`;
-- `String nome`;
-- `String email`;
-- `String senha`;
-- `String telefone`;
-- `String senioridade`;
-- `String resumo`;
-- `String curriculo`;
-- `List<String> habilidades`;
-- `String perfilLinkedin`;
-- possível link do GitHub, conforme a versão do arquivo.
-
-Campos longos devem usar `TEXT`.
-
-A entidade passou a implementar `UserDetails`.
-
-Regras:
-
-- e-mail é o username;
-- senha deve estar em BCrypt;
-- autoridade padrão: `ROLE_USER`;
-- conta, credenciais e usuário retornam ativos nas funções de `UserDetails`.
-
-### Risco atual
-
-Se o controller retorna `Perfil` diretamente, o hash da senha pode aparecer no JSON. O ideal é:
-
-- usar `@JsonIgnore` no campo/getter da senha; ou
-- criar DTOs de entrada e saída que não exponham senha.
-
----
-
-## 8. Modelo `VagaAnalisada`
-
-Campos existentes ou adicionados:
-
-- `Long id`;
-- `String titulo`;
-- `String empresa`;
-- `String descricaoCompleta`;
-- `String linkVaga`;
-- `Integer porcentagemMatch`;
-- `String justificativa`;
-- `Boolean valeApenaAplicar`;
-- `List<String> requisitosAtendidos`;
-- `List<String> habilidadesFaltantes`;
-- `String curriculoGerado`;
-- `String coverLetterGerada`.
-
-Listas usam `@ElementCollection`.
-
-Textos longos usam `@Column(columnDefinition = "TEXT")`.
-
-### Pendência arquitetural
-
-Não há confirmação de uma associação JPA entre `VagaAnalisada` e `Perfil`. Para multiusuário, adicionar algo como:
-
-```java
-@ManyToOne(fetch = FetchType.LAZY)
-@JoinColumn(name = "perfil_id", nullable = false)
-private Perfil perfil;
-```
-
----
-
-## 9. DTOs principais
-
-### `VagaRequest`
-
-Versão evoluída:
-
-```java
-public record VagaRequest(
-    String titulo,
-    String empresa,
-    String descricaoCompleta,
-    String linkVaga
-) {}
-```
-
-Alguns pontos antigos ainda podem instanciar o record com três argumentos. Atualizar todos os usos para a versão final.
-
-### `AnaliseMatch`
-
-```java
-public record AnaliseMatch(
-    int porcentagemMatch,
-    String justificativa,
-    List<String> requisitosAtendidos,
-    List<String> habilidadesFaltantes,
-    boolean valeApenaAplicar
-) {}
-```
-
-### `MateriaisCandidatura`
-
-Houve duas abordagens.
-
-Versão acoplada:
-
-```java
-public record MateriaisCandidatura(
-    String coverLetter,
-    String resumoProfissional,
-    List<String> itensExperienciaZenit,
-    List<String> itensExperienciaEducAZ
-) {}
-```
-
-Essa versão omitia ou dificultava a experiência da SECOM e não é genérica.
-
-Direção recomendada:
-
-```java
-public record MateriaisCandidatura(
-    String coverLetter,
-    String resumoProfissional,
-    List<ExperienciaAdaptada> experiencias
-) {}
-
-public record ExperienciaAdaptada(
-    String empresa,
-    String cargo,
-    String periodo,
-    String local,
-    List<String> bulletPoints
-) {}
-```
-
-Verificar qual versão está no projeto antes de continuar.
-
----
-
-## 10. Repositories
-
-### `PerfilRepository`
-
-Deve estar tipado:
-
-```java
-public interface PerfilRepository
-    extends JpaRepository<Perfil, Long> {
-
-    UserDetails findByEmail(String email);
-}
-```
-
-O repository sem `<Perfil, Long>` causou erros de `Object` e type safety.
-
-### `VagaAnalisadaRepository`
-
-```java
-public interface VagaAnalisadaRepository
-    extends JpaRepository<VagaAnalisada, Long> {
-}
-```
-
-Ainda falta, possivelmente:
-
-- consulta por `jobId` ou `linkVaga` para deduplicação persistente;
-- consulta por perfil;
-- ordenação por porcentagem;
-- paginação;
-- filtros por recomendação.
-
----
-
-## 11. `MatchService`
-
-É o serviço central.
-
-### Dependências
-
-- `ChatClient`;
-- `PerfilRepository`;
-- `VagaAnalisadaRepository`.
-
-### Fluxo de `analisarCompatibilidade(VagaRequest vaga)`
-
-1. buscar o perfil;
-2. montar prompt com perfil e vaga;
-3. chamar Ollama;
-4. converter para `AnaliseMatch`;
-5. preencher `VagaAnalisada`;
-6. se `porcentagemMatch > 70`, gerar materiais;
-7. montar LaTeX no backend;
-8. salvar no PostgreSQL;
-9. retornar a entidade.
-
-### Problema atual importante
-
-Durante o histórico, o perfil foi buscado por ID fixo (`1L` e depois `2L`). Isso deve ser removido.
-
-A solução correta é obter o usuário autenticado:
-
-```java
-Authentication authentication =
-    SecurityContextHolder.getContext().getAuthentication();
-
-String email = authentication.getName();
-Perfil perfil = perfilRepository.findPerfilByEmail(email)
-    .orElseThrow(...);
-```
-
-Para isso, é recomendável alterar o repository para retornar `Optional<Perfil>` em método separado.
-
-### Regra de match
-
-A condição usada foi:
-
-```java
-if (analiseDaIA.porcentagemMatch() > 70)
-```
-
-Confirmar se o requisito desejado é `> 70` ou `>= 70`.
-
-### Resposta da IA
-
-Configuração:
+A configuração documentada utiliza:
 
 ```properties
 spring.ai.ollama.base-url=http://localhost:11434
@@ -435,19 +426,86 @@ spring.ai.ollama.chat.options.format=json
 spring.ai.ollama.chat.options.temperature=0.2
 ```
 
-A IA deve retornar somente JSON compatível com o record.
-
-### LaTeX
-
-Não pedir para a IA gerar o documento inteiro. Manter o template no Java e injetar textos gerados.
+O modelo exato deve ser confirmado no `application.properties` atual antes da execução.
 
 ---
 
-## 12. Autenticação e segurança
+## Executando o projeto
 
-### Login
+### 1. Subir o PostgreSQL
 
-Rota:
+Na raiz:
+
+```bash
+docker compose up -d
+```
+
+Verifique:
+
+```bash
+docker ps
+```
+
+O PostgreSQL deve estar disponível na porta `5432`.
+
+### 2. Iniciar o Ollama
+
+O Ollama deve estar executando localmente na porta:
+
+```text
+11434
+```
+
+Confirme também se o modelo configurado pelo backend está instalado.
+
+### 3. Iniciar o backend
+
+Entre na pasta:
+
+```bash
+cd backend
+```
+
+Execute:
+
+```bash
+mvn spring-boot:run
+```
+
+O backend utiliza a porta:
+
+```text
+8080
+```
+
+### 4. Instalar dependências do frontend
+
+```bash
+cd frontend
+npm install
+```
+
+### 5. Iniciar o frontend
+
+```bash
+npm run dev
+```
+
+O Vite utiliza, conforme a configuração documentada:
+
+```text
+http://localhost:5173
+```
+
+> Se `npm run dev` informar que o script não existe, confirme se o terminal está dentro de `frontend/` e se o `package.json` possui `"dev": "vite"`.
+
+---
+
+## API
+
+### Autenticação
+
+#### Login
 
 ```http
 POST /auth/login
@@ -470,588 +528,523 @@ Saída:
 }
 ```
 
-### JWT
+O token deve ser enviado nas rotas protegidas:
 
-- biblioteca Auth0 Java JWT;
-- algoritmo HMAC256;
-- issuer: `AutoJobMatch`;
-- subject: e-mail;
-- expiração aproximada: duas horas;
-- API stateless.
-
-### BCrypt
-
-Há um bean `PasswordEncoder` com `BCryptPasswordEncoder`.
-
-Senhas antigas em texto simples não funcionam no login. Elas devem ser convertidas para hash BCrypt.
-
-### `SecurityFilter`
-
-O filtro:
-
-1. lê `Authorization`;
-2. verifica `Bearer `;
-3. valida o JWT;
-4. recupera o e-mail;
-5. carrega o usuário;
-6. preenche o `SecurityContext`.
-
-### Rotas públicas
-
-Confirmadas ou discutidas:
-
-- `POST /auth/login`;
-- rota de cadastro do perfil;
-- `OPTIONS /**`;
-- temporariamente `/api/bot/buscar` durante testes.
-
-### Inconsistência atual
-
-A segurança liberava `/perfis/cadastrar`, mas o controller usava `/api/perfis`. Alinhar o matcher com a rota real.
-
-### CORS
-
-Permitir:
-
-- origem `http://localhost:5173`;
-- métodos GET, POST, PUT, DELETE e OPTIONS;
-- cabeçalhos `Authorization` e `Content-Type`;
-- credenciais, se mantidas na configuração.
+```http
+Authorization: Bearer <token>
+```
 
 ---
 
-## 13. Endpoints conhecidos
-
 ### Perfis
+
+#### Criar perfil
 
 ```http
 POST /api/perfis
-GET  /api/perfis
 ```
 
-### Login
+Exemplo:
+
+```json
+{
+  "nome": "Usuário",
+  "email": "usuario@email.com",
+  "senha": "senha",
+  "telefone": "...",
+  "senioridade": "Júnior",
+  "resumo": "...",
+  "curriculo": "...",
+  "habilidades": [
+    "Java",
+    "Spring Boot",
+    "React"
+  ]
+}
+```
+
+#### Listar perfis
 
 ```http
-POST /auth/login
+GET /api/perfis
 ```
+
+> A implementação atual precisa evitar que a senha, mesmo em BCrypt, seja exposta diretamente no JSON.
+
+---
 
 ### Match
 
+#### Analisar vaga
+
 ```http
 POST /api/match
-GET  /api/match
 ```
 
-`POST /api/match` recebe `VagaRequest` e retorna `VagaAnalisada`.
+Entrada:
 
-`GET /api/match` lista o histórico.
+```json
+{
+  "titulo": "Desenvolvedor Java",
+  "empresa": "Empresa X",
+  "descricaoCompleta": "Descrição integral da vaga...",
+  "linkVaga": "https://..."
+}
+```
 
-### Busca Remotive
+Saída esperada:
+
+```json
+{
+  "id": 1,
+  "titulo": "Desenvolvedor Java",
+  "empresa": "Empresa X",
+  "descricaoCompleta": "...",
+  "porcentagemMatch": 82,
+  "justificativa": "...",
+  "valeApenaAplicar": true,
+  "requisitosAtendidos": [
+    "Java",
+    "Spring Boot"
+  ],
+  "habilidadesFaltantes": [
+    "Kubernetes"
+  ],
+  "curriculoGerado": "...",
+  "coverLetterGerada": "...",
+  "linkVaga": "https://..."
+}
+```
+
+#### Histórico
+
+```http
+GET /api/match
+```
+
+Retorna as vagas analisadas persistidas no banco.
+
+#### Busca web — Remotive
 
 ```http
 POST /api/match/buscar-web
 ```
 
-Prova de conceito síncrona.
+É uma prova de conceito síncrona.
+
+---
 
 ### Bot LinkedIn
 
-Caminhos discutidos:
+Rotas documentadas:
 
 ```text
 /api/bot/gerar-sessao
 /api/bot/buscar
 ```
 
-Confirmar método HTTP no `BotController` real.
-
-### Divergência do frontend
-
-O frontend antigo chama:
-
-```text
-/api/vagas/analisar
-```
-
-Mas o backend consolidado usa:
-
-```text
-/api/match
-```
-
-Ajustar imediatamente.
+O método HTTP final deve ser confirmado no `BotController` atual.
 
 ---
 
-## 14. Automação do LinkedIn
+## Inteligência Artificial
 
-### Dependência
+A IA é executada localmente por meio do Ollama e integrada ao backend usando Spring AI.
 
-Playwright para Java.
+O `ChatClient` transforma a resposta da IA diretamente em objetos Java:
+
+```java
+chatClient
+    .prompt()
+    .user(prompt)
+    .call()
+    .entity(AnaliseMatch.class);
+```
+
+### Primeira etapa
+
+A IA analisa a compatibilidade.
+
+```text
+Perfil + Currículo + Vaga
+          ↓
+        Ollama
+          ↓
+     AnaliseMatch
+```
+
+### Segunda etapa
+
+Somente vagas acima do limite definido recebem geração de materiais.
+
+Regra registrada:
+
+```java
+if (porcentagemMatch > 70) {
+    // gerar materiais
+}
+```
+
+O limite `> 70` deve ser mantido ou explicitamente alterado caso a regra de negócio passe a utilizar `>= 70`.
+
+---
+
+## Automação do LinkedIn
+
+O Playwright controla o Chromium e realiza:
+
+1. abertura do LinkedIn;
+2. carregamento da sessão;
+3. localização das vagas;
+4. extração dos cards;
+5. abertura das vagas;
+6. extração dos detalhes;
+7. envio ao `MatchService`;
+8. processamento de múltiplas vagas;
+9. controle de erros e retry;
+10. deduplicação durante a execução.
 
 ### Sessão
 
-Método `gerarSessaoLinkedin()`:
+O login é realizado manualmente na primeira execução.
 
-1. abre o login em navegador visível;
-2. usuário faz login manualmente;
-3. espera cerca de 60 segundos;
-4. salva `linkedin-session.json`.
+Depois, o estado da sessão é salvo em:
 
-Esse arquivo é sensível e deve estar no `.gitignore`.
+```text
+linkedin-session.json
+```
 
-### Busca
+Nas execuções seguintes, o Playwright reutiliza esse estado.
 
-A automação:
-
-1. carrega a sessão;
-2. abre a URL de busca;
-3. espera os cards;
-4. encontra `li[data-occludable-job-id]`;
-5. obtém `jobId`;
-6. relocaliza o card pelo ID;
-7. faz scroll e hover;
-8. clica;
-9. extrai título, empresa, descrição e link;
-10. cria `VagaRequest`;
-11. chama `MatchService` com retry;
-12. marca como processada somente após sucesso;
-13. continua;
-14. faz scroll para carregar novas vagas;
-15. encerra após tentativas sem novidades.
-
-### Seletores
-
-- cards: `li[data-occludable-job-id]`;
-- descrição principal: `#job-details`;
-- título: `h1` ou seletor específico da top card;
-- empresa: contêiner `.job-details-jobs-unified-top-card__primary-description`, sem exigir tag `a`.
+**Não versionar esse arquivo no Git.**
 
 ### Deduplicação
 
-Existe em memória:
+Durante uma execução, o bot utiliza:
 
 ```java
-Set<String> vagasProcessadas = new HashSet<>();
+Set<String> vagasProcessadas
 ```
 
-Ainda falta deduplicação no banco entre execuções.
+O identificador utilizado é o `jobId` da plataforma.
 
-### Logs
-
-A automação foi refatorada de `System.out.println` para SLF4J.
-
-### Retry
-
-O método de retry deve relançar a exceção após a última tentativa. Caso contrário, uma falha pode ser contada como sucesso.
+A deduplicação entre execuções ainda precisa ser implementada no banco.
 
 ---
 
-## 15. Integração com Gupy
+## Regras de negócio
 
-Endpoint identificado:
-
-```text
-https://employability-portal.gupy.io/api/v1/jobs
-```
-
-Parâmetros:
-
-- `jobName`;
-- `limit`;
-- `offset`.
-
-Mapeamento relevante:
-
-- `name` → título;
-- `careerPageName` → empresa;
-- `description` → descrição;
-- `jobUrl` → link.
-
-A decisão técnica foi consumir o JSON diretamente, evitando Playwright para Gupy.
-
-Não há confirmação de que essa integração tenha sido finalizada no pipeline atual. Verificar se existe um serviço concreto no backend.
-
----
-
-## 16. Integração com Remotive
-
-Foi implementada como prova de conceito.
-
-Fluxo:
-
-1. chamar API da Remotive;
-2. limitar a poucos resultados;
-3. transformar em `VagaRequest`;
-4. analisar com `MatchService`;
-5. persistir.
-
-Essa integração demonstra o padrão correto para novas fontes, mas não é a fonte principal do projeto.
-
----
-
-## 17. Frontend atual
-
-### Arquivos principais
-
-```text
-src/main.tsx
-src/App.tsx
-src/index.css
-src/pages/Login.tsx
-src/pages/Dashboard.tsx
-src/services/api.ts
-```
-
-### Tailwind
-
-Instalação adotada:
-
-```bash
-npm install tailwindcss @tailwindcss/vite
-```
-
-`vite.config.ts`:
-
-```ts
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
-
-export default defineConfig({
-  plugins: [react(), tailwindcss()]
-});
-```
-
-`src/index.css`:
-
-```css
-@import "tailwindcss";
-```
-
-`App.css` foi removido ou deve deixar de ser importado.
-
-### `App.tsx`
-
-Mantém estados simples:
-
-- `autenticado`;
-- `carregando`.
-
-Na inicialização, verifica se existe token no `localStorage`.
-
-Não há React Router nem validação imediata da expiração do token.
-
-### `Login.tsx`
-
-Já possui:
-
-- formulário estilizado;
-- e-mail;
-- senha;
-- loading;
-- mensagem de erro;
-- chamada `api.login()`;
-- armazenamento do token;
-- callback de sucesso.
-
-### `Dashboard.tsx`
-
-Ponto final do histórico.
-
-A tela atual:
-
-- possui navbar;
-- botão de logout;
-- textarea para colar descrição da vaga;
-- botão para chamar a IA;
-- painel para mostrar código LaTeX;
-- botão para copiar o código;
-- visual estilizado com Tailwind.
-
-O dashboard cria um payload provisório com título e empresa genéricos:
-
-```ts
-const vagaMock: VagaPayload = {
-  titulo: 'Desenvolvedor Analisado pela IA',
-  empresa: 'Empresa da Vaga',
-  descricaoCompleta: vagaTexto
-};
-```
-
-### Problemas atuais do frontend
-
-1. a rota em `api.ts` provavelmente ainda é `/api/vagas/analisar`, mas deve ser `/api/match`;
-2. `api.gerarCurriculo()` provavelmente retorna `Promise<string>` e usa `response.text()`;
-3. o backend retorna JSON de `VagaAnalisada`, não uma string;
-4. o payload pode estar sem `linkVaga`;
-5. o header deve ser `Bearer ${token}`, com espaço;
-6. o dashboard só mostra LaTeX e não mostra score, justificativa, requisitos ou carta;
-7. o estado considera qualquer token como válido;
-8. não há tratamento global de 401;
-9. não há tela de histórico;
-10. não há tela de perfil.
-
----
-
-## 18. Contrato TypeScript recomendado
-
-Criar em `api.ts` ou `types`:
-
-```ts
-export interface VagaPayload {
-  titulo: string;
-  empresa: string;
-  descricaoCompleta: string;
-  linkVaga?: string;
-}
-
-export interface VagaAnalisada {
-  id: number;
-  titulo: string;
-  empresa: string;
-  descricaoCompleta: string;
-  linkVaga?: string;
-  porcentagemMatch: number;
-  justificativa: string;
-  valeApenaAplicar: boolean;
-  requisitosAtendidos: string[];
-  habilidadesFaltantes: string[];
-  curriculoGerado?: string;
-  coverLetterGerada?: string;
-}
-```
-
-A chamada deve ser semelhante a:
-
-```ts
-async analisarVaga(
-  dados: VagaPayload
-): Promise<VagaAnalisada> {
-  const token = localStorage.getItem('token');
-
-  const response = await fetch(
-    `${BASE_URL}/api/match`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify(dados)
-    }
-  );
-
-  if (response.status === 401) {
-    localStorage.removeItem('token');
-    throw new Error('Sessão expirada');
-  }
-
-  if (!response.ok) {
-    throw new Error('Erro ao analisar vaga');
-  }
-
-  return response.json();
-}
-```
-
----
-
-## 19. Bugs já encontrados e lições
-
-### Backend
-
-- repository sem tipos genéricos;
-- assinatura malformada de controller;
-- configurações H2 e PostgreSQL misturadas;
-- driver H2 ausente;
-- perfil buscado por ID fixo;
-- resposta da IA fora do JSON;
-- LaTeX quebrando JSON;
-- campos de currículo/carta ausentes na entidade;
-- exemplo conceitual usando métodos/classes inexistentes;
-- rotas públicas divergentes;
-- senha em texto simples incompatível com BCrypt;
-- classe `GerarHash` fora do classpath.
-
-### Playwright
-
-- timeout em seletor da empresa;
-- seletor exigia tag `a` inexistente;
-- URL alterada;
-- descrição ainda não carregada;
-- DOM virtualizado;
-- locators antigos após clique;
-- somente primeira vaga processada;
-- duplicidades após scroll;
-- vaga marcada como processada antes do sucesso;
-- retry ocultando falha final.
-
-### Frontend
-
-- `npm run dev` sem script/pasta errada;
-- Tailwind configurado pela abordagem antiga;
-- CSS padrão do Vite interferindo;
-- import relativo de `api.ts` potencialmente errado;
-- CORS;
-- header JWT sem espaço;
-- rota diferente do backend;
-- frontend esperando texto e backend retornando JSON.
-
----
-
-## 20. Estado atual do projeto
-
-### O que está funcional ou foi testado no histórico
-
-- inicialização do Spring Boot;
-- conexão PostgreSQL;
-- criação de entidade e repository de perfil;
-- cadastro e listagem básica de perfil;
-- integração Ollama/Spring AI;
-- análise de compatibilidade estruturada;
-- persistência de vagas;
-- histórico básico pelo backend;
-- geração condicional de currículo e carta;
-- construção de LaTeX no Java;
-- login com JWT;
-- BCrypt;
-- filtro de segurança;
-- CORS;
-- geração da sessão do LinkedIn;
-- busca e extração de vagas com Playwright;
-- processamento de várias vagas;
-- deduplicação em memória;
-- retry e logs;
-- frontend React inicial;
-- tela de login;
-- dashboard manual;
-- Tailwind CSS.
-
-### O que não está confirmado como finalizado
-
-- integração Gupy completa no pipeline;
-- compilação LaTeX para PDF;
-- candidatura automática;
-- busca agendada;
-- tela de histórico;
-- tela de edição do perfil;
-- associação de vagas ao usuário;
-- deduplicação persistente;
-- processamento assíncrono;
-- múltiplos usuários isolados corretamente;
-- contrato frontend/backend totalmente alinhado.
-
----
-
-## 21. Próximo passo exato
-
-O próximo passo recomendado é **corrigir o contrato entre frontend e backend** antes de criar novas telas.
-
-Ordem:
-
-1. abrir `MatchController` e confirmar a rota real;
-2. confirmar o JSON de resposta de `POST /api/match`;
-3. abrir `src/services/api.ts`;
-4. trocar `/api/vagas/analisar` por `/api/match`;
-5. trocar `Promise<string>` por `Promise<VagaAnalisada>`;
-6. trocar `response.text()` por `response.json()`;
-7. garantir `Authorization: Bearer ${token}`;
-8. atualizar `Dashboard.tsx` para armazenar o objeto completo;
-9. exibir:
-   - porcentagem;
-   - justificativa;
-   - requisitos atendidos;
-   - habilidades faltantes;
-   - indicação de candidatura;
-   - carta;
-   - LaTeX;
-10. testar o fluxo completo pelo navegador.
-
-Depois disso:
-
-11. remover o ID fixo no `MatchService` e usar o usuário autenticado;
-12. criar associação entre vaga e perfil;
-13. implementar `GET /api/match` no frontend como tela de histórico;
-14. criar tela de perfil;
-15. implementar deduplicação persistente;
-16. transformar a busca automática em job assíncrono;
-17. adicionar agendamento apenas depois de o job assíncrono estar estável.
-
----
-
-## 22. Melhorias prioritárias
-
-### Alta prioridade
-
-- alinhar rota e resposta frontend/backend;
-- remover perfil por ID fixo;
-- ocultar senha nos JSONs;
-- vincular vagas ao usuário;
-- validar DTOs com Bean Validation;
-- tratar 401 no frontend;
-- guardar `linkedin-session.json` fora do Git;
-- adicionar deduplicação no banco.
-
-### Média prioridade
-
-- histórico no dashboard;
-- tela de perfil;
-- filtros de busca;
-- paginação;
-- estado de processamento do bot;
-- tratamento centralizado de exceções;
-- logs estruturados;
-- migrações Flyway.
-
-### Futuro
-
-- geração de PDF;
-- filas e jobs;
-- agendamento;
-- integração final com Gupy;
-- novas fontes;
-- métricas;
-- candidatura assistida;
-- testes automatizados;
-- Docker Compose com backend, frontend, banco e Ollama.
-
----
-
-## 23. Regras que não devem ser quebradas
+Estas regras são fundamentais para a continuidade do projeto:
 
 1. A IA não pode inventar experiências ou tecnologias.
 2. O perfil é a fonte oficial dos dados do candidato.
 3. O currículo completo deve ser considerado.
-4. A resposta de análise deve ser estruturada.
-5. Currículo e carta só são gerados quando o match ultrapassa o limite definido.
-6. A automação apenas coleta a vaga; o `MatchService` decide, gera e persiste.
-7. Uma vaga só é marcada como processada após sucesso.
-8. Uma falha não deve interromper o processamento das demais vagas.
-9. O LaTeX deve ser estruturado pelo backend, não integralmente pela IA.
-10. Senhas devem usar BCrypt.
+4. A resposta da análise deve ser estruturada.
+5. Currículo e carta só devem ser gerados para matches acima do limite definido.
+6. A automação coleta a vaga; o `MatchService` decide, gera e persiste.
+7. Uma vaga só deve ser marcada como processada depois de sucesso.
+8. Uma falha em uma vaga não deve interromper o processamento das demais.
+9. O LaTeX deve ser estruturado pelo backend.
+10. Senhas devem utilizar BCrypt.
 11. Rotas protegidas exigem JWT.
-12. O bot deve preservar o link da vaga.
-13. A sessão do LinkedIn é sensível.
-14. API estruturada deve ser preferida a scraping quando disponível.
+12. O link original da vaga deve ser preservado.
+13. A sessão do LinkedIn é informação sensível.
+14. APIs estruturadas devem ser preferidas a scraping quando disponíveis.
 
 ---
 
-## 24. Instrução para a próxima IA
+## Estado atual
 
-Antes de alterar código:
+### Concluído / funcional
 
-1. peça ou leia os arquivos reais do projeto atual;
-2. não assuma que todos os exemplos do histórico foram copiados literalmente;
-3. confirme os nomes atuais de pacotes, classes, rotas e campos;
-4. preserve as decisões arquiteturais descritas neste documento;
-5. comece pelo alinhamento do frontend com `POST /api/match`;
-6. não crie métodos como `calcularScoreDeMatch` ou classes como `Candidatura` sem necessidade, pois o fluxo já pertence ao `MatchService`;
-7. não volte a pedir para a IA gerar o LaTeX inteiro;
-8. não use ID de perfil fixo na solução definitiva.
+- [x] Estrutura backend Spring Boot
+- [x] PostgreSQL
+- [x] Persistência do perfil
+- [x] Repository de perfil
+- [x] Análise de vagas com Ollama
+- [x] Spring AI
+- [x] Resposta estruturada da IA
+- [x] Pontuação de compatibilidade
+- [x] Justificativa
+- [x] Requisitos atendidos
+- [x] Habilidades faltantes
+- [x] Recomendação de candidatura
+- [x] Persistência das vagas analisadas
+- [x] Histórico básico no backend
+- [x] Geração condicional de materiais
+- [x] Geração textual de carta
+- [x] Geração de currículo em LaTeX
+- [x] Template LaTeX controlado pelo backend
+- [x] Playwright
+- [x] Sessão reutilizável do LinkedIn
+- [x] Processamento de múltiplas vagas
+- [x] Deduplicação durante a execução
+- [x] Retry da IA
+- [x] Logging
+- [x] JWT
+- [x] BCrypt
+- [x] CORS
+- [x] Frontend React + TypeScript
+- [x] Login
+- [x] Logout
+- [x] Dashboard inicial
+- [x] Tailwind CSS
+
+### Em desenvolvimento / pendente
+
+- [ ] Alinhar completamente frontend e backend
+- [ ] Atualizar frontend de `/api/vagas/analisar` para `/api/match`
+- [ ] Atualizar frontend de `response.text()` para `response.json()`
+- [ ] Tipar a resposta como `VagaAnalisada`
+- [ ] Exibir análise completa no dashboard
+- [ ] Histórico no frontend
+- [ ] Tela de perfil
+- [ ] Associar cada vaga ao usuário autenticado
+- [ ] Remover uso de ID fixo no `MatchService`
+- [ ] Ocultar senha dos retornos JSON
+- [ ] Deduplicação persistente no banco
+- [ ] Validação dos DTOs
+- [ ] Tratamento de `401` no frontend
+- [ ] Filtros e paginação
+- [ ] Processamento assíncrono
+- [ ] Estado do processamento do bot
+- [ ] Tratamento centralizado de exceções
+- [ ] Migrações com Flyway
+
+### Planejado
+
+- [ ] Agendamento automático
+- [ ] Busca periódica
+- [ ] Candidatura assistida/automática
+- [ ] Preenchimento automático de perguntas
+- [ ] Identificação de etapas que exigem ação manual
+- [ ] Integração final com Gupy
+- [ ] Novas fontes de vagas
+- [ ] Geração de PDF compilado
+- [ ] Dashboard com métricas
+- [ ] Filas/jobs
+- [ ] Testes automatizados
+- [ ] Suporte completo a múltiplos usuários
+- [ ] Docker Compose completo com backend, frontend, banco e Ollama
 
 ---
 
-## 25. Ponto de retomada em uma frase
+## Próximo passo
 
-**O backend já possui o núcleo de perfil, autenticação, análise com Ollama, persistência, geração de materiais e automação Playwright; o frontend acabou de receber uma interface Tailwind de login e dashboard, mas agora precisa ser conectado corretamente ao contrato JSON real de `POST /api/match` e evoluído para mostrar toda a análise.**
+O próximo passo técnico recomendado é **corrigir o contrato entre frontend e backend antes de adicionar novas funcionalidades visuais**.
+
+Ordem recomendada:
+
+1. Confirmar a rota real do `MatchController`.
+2. Confirmar o JSON retornado por `POST /api/match`.
+3. Atualizar `src/services/api.ts`.
+4. Substituir `/api/vagas/analisar` por `/api/match`.
+5. Substituir `Promise<string>` por `Promise<VagaAnalisada>`.
+6. Substituir `response.text()` por `response.json()`.
+7. Garantir `Authorization: Bearer ${token}`.
+8. Atualizar `Dashboard.tsx` para trabalhar com o objeto completo.
+9. Exibir:
+   - porcentagem;
+   - justificativa;
+   - requisitos atendidos;
+   - habilidades faltantes;
+   - recomendação;
+   - carta;
+   - currículo/LaTeX.
+10. Testar o fluxo completo pelo navegador.
+
+Depois:
+
+11. Remover o ID fixo do perfil.
+12. Utilizar o usuário autenticado.
+13. Criar associação entre `VagaAnalisada` e `Perfil`.
+14. Criar histórico no frontend.
+15. Criar tela de perfil.
+16. Implementar deduplicação persistente.
+17. Transformar a busca automática em job assíncrono.
+18. Implementar agendamento depois que o processamento assíncrono estiver estável.
+
+---
+
+## Decisões técnicas
+
+### Spring Boot como orquestrador
+
+O backend centraliza:
+
+- regras de negócio;
+- banco;
+- IA;
+- automação;
+- segurança;
+- integrações;
+- geração de documentos.
+
+### PostgreSQL
+
+Foi escolhido como banco persistente principal.
+
+O H2 foi utilizado apenas durante a prototipagem.
+
+### Ollama local
+
+A IA local foi escolhida por:
+
+- privacidade;
+- ausência de custo por chamada;
+- possibilidade de execução offline;
+- controle do modelo;
+- valor técnico para o projeto.
+
+### Spring AI
+
+O Spring AI abstrai a comunicação com o Ollama e fornece o `ChatClient`, prompts e conversão estruturada das respostas.
+
+### IA em duas etapas
+
+A análise e a geração de materiais são separadas para:
+
+- reduzir processamento;
+- evitar gerar currículo para vagas fracas;
+- diminuir tempo de execução;
+- facilitar tratamento de erros.
+
+### JSON estruturado
+
+A IA deve retornar dados estruturados em vez de texto livre para facilitar:
+
+- persistência;
+- regras condicionais;
+- integração frontend/backend;
+- processamento automático.
+
+### LaTeX controlado pelo backend
+
+A IA gera somente o conteúdo variável.
+
+O template fica no Java.
+
+Isso reduz problemas com:
+
+- escape;
+- JSON inválido;
+- comandos LaTeX;
+- alterações involuntárias de layout.
+
+### APIs antes de scraping
+
+Quando uma fonte fornece dados estruturados, a preferência é consumir a API em vez de renderizar e extrair o HTML.
+
+---
+
+## Segurança
+
+O projeto utiliza:
+
+- Spring Security;
+- JWT;
+- HMAC256;
+- BCrypt;
+- API stateless;
+- filtro JWT;
+- CORS.
+
+Configuração documentada do JWT:
+
+```text
+Issuer: AutoJobMatch
+Subject: e-mail do usuário
+Algoritmo: HMAC256
+Expiração aproximada: 2 horas
+```
+
+O frontend deve enviar:
+
+```http
+Authorization: Bearer <token>
+```
+
+A origem documentada para desenvolvimento é:
+
+```text
+http://localhost:5173
+```
+
+O backend utiliza:
+
+```text
+http://localhost:8080
+```
+
+---
+
+## Observações importantes para desenvolvimento
+
+### Senhas
+
+Nunca salvar senha em texto simples.
+
+O cadastro deve aplicar:
+
+```java
+perfil.setSenha(
+    passwordEncoder.encode(perfil.getSenha())
+);
+```
+
+### Perfil autenticado
+
+Não manter ID de perfil fixo no `MatchService`.
+
+O perfil deve ser obtido a partir do usuário autenticado/JWT.
+
+### Vagas por usuário
+
+Para uma aplicação multiusuário real, `VagaAnalisada` deve possuir associação com `Perfil`.
+
+### Sessão do LinkedIn
+
+O arquivo:
+
+```text
+linkedin-session.json
+```
+
+contém estado de autenticação e deve permanecer fora do versionamento.
+
+### Contrato frontend/backend
+
+O backend consolidado utiliza:
+
+```text
+POST /api/match
+```
+
+e retorna um objeto `VagaAnalisada`.
+
+O frontend precisa trabalhar com JSON tipado.
+
+---
+
+## Status resumido
+
+```text
+Backend                 ████████████████████  Avançado
+Banco                   ████████████████████  Funcional
+IA / Ollama             ████████████████████  Funcional
+Análise de vagas        ████████████████████  Funcional
+Persistência            ████████████████████  Funcional
+Playwright / LinkedIn   ███████████████████░  Avançado
+Autenticação            ███████████████████░  Implementada
+Frontend                ███████████████░░░░░  Em evolução
+Integração Front/Back   ███████████░░░░░░░░  Pendente
+Multiusuário            ███████░░░░░░░░░░░░  Pendente
+Jobs / Agendamento      ████░░░░░░░░░░░░░░░  Planejado
+Candidatura automática  ██░░░░░░░░░░░░░░░░░  Planejado
+```
+
+---
+
+## Licença
+
+Projeto em desenvolvimento. A licença ainda não está definida na documentação atual.
